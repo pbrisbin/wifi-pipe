@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="Openbox 3">
+    <item label="System Monitor">
+      <action name="Execute">
+        <command>urxvtc -g 120x40 -e htop</command>
+      </action>
+    </item>
+    <item label="Run...">
+      <action name="Execute">
+        <command>gmrun</command>
+        <startupnotify>
+          <enabled>yes</enabled>
+        </startupnotify>
+      </action>
+    </item>
+    <item label="Mixer">
+      <action name="Execute">
+        <command>ossxmix</command>
+        <startupnotify>
+          <enabled>yes</enabled>
+        </startupnotify>
+      </action>
+    </item>
+    <item label="Chat">
+      <action name="Execute">
+        <command>pidgin</command>
+        <startupnotify>
+          <enabled>yes</enabled>
+        </startupnotify>
+      </action>
+    </item>
+    <separator />
+
+    <!--
+         
+         better to place it on the bottom, since the scan is expensive. if
+         you roll your mouse over this item on your way elsewhere, you'll
+         have to wait.
+         
+         note: interface is usually wlan0.
+         
+    -->
+    <menu id="pipe-wifi" label="Wifi" execute="sudo /path/to/wifi-pipe interface"/>
+  </menu>
+</openbox_menu>
