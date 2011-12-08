@@ -94,16 +94,15 @@ connect() {
   fi
 
   # connect
-  /usr/bin/netcfg "$profile" > /tmp/output.tmp
+  if !/usr/bin/netcfg "$profile" > /tmp/output.tmp; then
   
-  # if failed, ask about removal of created profile
-  if [[ $? -ne 0 ]]; then
-    zenity --question \
-           --title="Connection failed" \
-           --text="$(grep -Eo "[\-\>]\ .*$" /tmp/output.tmp) \n Remove $profile_file?" \
-           --ok-label="Remove profile"
+    # failed, ask about removal of created profile
+    if zenity --question --title="Connection failed" \
+              --text="$(grep -Eo "[\-\>]\ .*$" /tmp/output.tmp) \n Remove $profile_file?" \
+              --ok-label="Remove profile"; then
 
-    [[ $? -eq 0 ]] && rm "$profile_file"
+      rm "$profile_file"
+    fi
   fi
 
   rm /tmp/output.tmp
