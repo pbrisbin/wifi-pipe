@@ -84,7 +84,9 @@ connect() {
 
     # ask for the security key if needed
     if [[ "$security" != 'none' ]]; then
-      key="$(zenity --entry --title="Authentication" --text="Please enter $security key for $essid" --hide-text)"
+      if ! key=$(zenity --entry --title="Authentication" --text="Please enter $security key for $essid" --hide-text); then
+        exit 1 # user cancelled.
+      fi
     fi
 
     # create the new profile
