@@ -49,16 +49,13 @@ print_menu() {
     /\<IE:.*WPA.*/        { security="wpa" }
     END { if (essid) print essid, security, quality[2]/quality[3]*100 }'
 
-  # scan for networks
   iwlist $interface scan 2>/dev/null | awk "$parser" | sort -t= -nrk3 > /tmp/networks.tmp
 
-  # exit if none found
   if [[ ! -s /tmp/networks.tmp ]]; then 
     rm /tmp/networks.tmp
     errorout 'no networks found.'
   fi
 
-  # otherwise print the menu
   echo '<openbox_pipe_menu>'
   while IFS='=' read -r essid security quality; do
     echo "<item label=\"$essid ($security) ${quality/.*/}%\">" # trim decimals
@@ -76,27 +73,23 @@ connect() {
   # check for an existing profile
   profile_file="$(grep -REl "ESSID=[\"']?$essid[\"']?" "$PROFILE_DIR" | grep -v '~$' | head -1)"
 
-  if [[  -n "$profile_file" ]]; then
+  if [[ -n "$profile_file" ]]; then
     profile="$(basename "$profile_file")"
   else
     profile="$essid"
     security="$(awk -F '=' "/$essid/"'{print $2}' /tmp/networks.tmp | head -n 1)"
 
-    # ask for the security key if needed
     if [[ "$security" != 'none' ]]; then
       if ! key=$(zenity --entry --title="Authentication" --text="Please enter $security key for $essid" --hide-text); then
         exit 1 # user cancelled.
       fi
     fi
 
-    # create the new profile
     create_profile "$essid" "$interface" "$security" "$key"
   fi
 
-  # connect
   if !/usr/bin/netcfg "$profile" > /tmp/output.tmp; then
-  
-    # failed, ask about removal of created profile
+    # connect failed, ask about removal of created profile
     if zenity --question --title="Connection failed" \
               --text="$(grep -Eo "[\-\>]\ .*$" /tmp/output.tmp) \n Remove $profile_file?" \
               --ok-label="Remove profile"; then
