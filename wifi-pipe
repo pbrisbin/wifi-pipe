@@ -9,7 +9,7 @@
 
 errorout() { 
   echo '<openbox_pipe_menu>'
-  echo "<item label=\"$1\" />" 
+  echo "<item label=\"error: $*\" />" 
   echo '</openbox_pipe_menu>'
   exit 1
 }
