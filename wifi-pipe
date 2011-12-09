@@ -35,6 +35,8 @@ EOF
   else
     chmod 644 "$profile_file"
   fi
+
+  echo "$profile_file"
 }
 
 # prints the actual xml based on the scan
@@ -85,7 +87,7 @@ connect() {
       fi
     fi
 
-    create_profile "$essid" "$interface" "$security" "$key"
+    profile_file="$(create_profile "$essid" "$interface" "$security" "$key")"
   fi
 
   if !/usr/bin/netcfg "$profile" > /tmp/output.tmp; then
