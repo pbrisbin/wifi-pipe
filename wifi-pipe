@@ -61,7 +61,7 @@ print_menu() {
   echo '<openbox_pipe_menu>'
   while IFS='=' read -r essid security quality; do
     echo "<item label=\"$essid ($security) ${quality/.*/}%\">" # trim decimals
-    echo '  <action name=\"Execute\">'
+    echo '  <action name="Execute">'
     echo "    <command>sudo $0 $interface connect \"$essid\"</command>"
     echo '  </action>'
     echo '</item>'
