@@ -90,7 +90,7 @@ connect() {
     profile_file="$(create_profile "$essid" "$interface" "$security" "$key")"
   fi
 
-  if !/usr/bin/netcfg "$profile" > /tmp/output.tmp; then
+  if ! /usr/bin/netcfg "$profile" > /tmp/output.tmp; then
     # connect failed, ask about removal of created profile
     if zenity --question --title="Connection failed" \
               --text="$(grep -Eo "[\-\>]\ .*$" /tmp/output.tmp) \n Remove $profile_file?" \
