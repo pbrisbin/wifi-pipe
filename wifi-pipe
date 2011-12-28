@@ -51,7 +51,7 @@ print_menu() {
     /\<IE:.*WPA.*/        { security="wpa" }
     END { if (essid) print essid, security, quality[2]/quality[3]*100 }'
 
-  iwlist $interface scan 2>/dev/null | awk "$parser" | sort -t= -nrk3 > /tmp/networks.tmp
+  iwlist $interface scan 2>/dev/null | awk "$awkscript" | sort -t= -nrk3 > /tmp/networks.tmp
 
   if [[ ! -s /tmp/networks.tmp ]]; then 
     rm /tmp/networks.tmp
@@ -61,7 +61,7 @@ print_menu() {
   echo '<openbox_pipe_menu>'
   while IFS='=' read -r essid security quality; do
     echo "<item label=\"$essid ($security) ${quality/.*/}%\">" # trim decimals
-    echo '  <action name=\"Execute\">'
+    echo '  <action name="Execute">'
     echo "    <command>sudo $0 $interface connect \"$essid\"</command>"
     echo '  </action>'
     echo '</item>'
@@ -90,7 +90,7 @@ connect() {
     profile_file="$(create_profile "$essid" "$interface" "$security" "$key")"
   fi
 
-  if !/usr/bin/netcfg "$profile" > /tmp/output.tmp; then
+  if ! /usr/bin/netcfg "$profile" > /tmp/output.tmp; then
     # connect failed, ask about removal of created profile
     if zenity --question --title="Connection failed" \
               --text="$(grep -Eo "[\-\>]\ .*$" /tmp/output.tmp) \n Remove $profile_file?" \
